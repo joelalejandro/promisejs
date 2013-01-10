@@ -14,7 +14,16 @@
 
     function Promise() {
         this._callbacks = [];
+        this.settings = { returnXHRObject: false };
     }
+    
+    Promise.prototype.setOption = function(name, value) {
+        this.settings[name] = value;  
+    };
+    
+    Promise.prototype.getOption = function(name) {
+        return this.settings[name];  
+    };
 
     Promise.prototype.then = function(func, context) {
         var f = bind(func, context);
@@ -138,10 +147,18 @@
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    p.done(null, xhr.responseText);
+                if (!p.getOption("returnXHRObject")) {
+                    if (xhr.status === 200) {
+                        p.done(null, xhr.responseText);
+                    } else {
+                        p.done(xhr.status, "");
+                    }
                 } else {
-                    p.done(xhr.status, "");
+                    if (xhr.status === 200) {
+                        p.done(null, xhr);
+                    } else {
+                        p.done(xhr.status, "");
+                    }
                 }
             }
         };
