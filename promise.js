@@ -8,6 +8,8 @@
 
 (function(exports) {
 
+    var settings = { returnXHRObject: false };
+
     function bind(func, context) {
         return function() {
             return func.apply(context, arguments);
@@ -16,15 +18,14 @@
 
     function Promise() {
         this._callbacks = [];
-        this.settings = { returnXHRObject: false };
     }
     
-    Promise.prototype.setOption = function(name, value) {
-        this.settings[name] = value;  
+    function setOption(name, value) {
+        settings[name] = value;  
     };
     
-    Promise.prototype.getOption = function(name) {
-        return this.settings[name];  
+    function getOption(name) {
+        return settings[name];  
     };
 
     Promise.prototype.then = function(func, context) {
@@ -149,7 +150,7 @@
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                if (!p.getOption("returnXHRObject")) {
+                if (!getOption("returnXHRObject")) {
                     if (xhr.status === 200) {
                         p.done(null, xhr.responseText);
                     } else {
@@ -159,7 +160,7 @@
                     if (xhr.status === 200) {
                         p.done(null, xhr);
                     } else {
-                        p.done(xhr.status, "");
+                        p.done(xhr.status, xhr);
                     }
                 }
             }
@@ -183,7 +184,10 @@
         get: _ajaxer('GET'),
         post: _ajaxer('POST'),
         put: _ajaxer('PUT'),
-        del: _ajaxer('DELETE')
+        del: _ajaxer('DELETE'),
+        settings: settings,
+        getOption: getOption,
+        setOption: setOption
     };
 
     if (typeof define === 'function' && define.amd) {
