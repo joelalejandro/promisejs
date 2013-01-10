@@ -2,6 +2,8 @@
  *  Copyright 2012 (c) Pierre Duquesne <stackp@online.fr>
  *  Licensed under the New BSD License.
  *  https://github.com/stackp/promisejs
+ *
+ *  Extended by Joel A. Villarreal Bertoldi <joel@moobin.net>
  */
 
 (function(exports) {
